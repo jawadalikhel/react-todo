@@ -1,55 +1,49 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import ToDoItem from "./ToDoItem";
+import InputArea from "./inputArea";
 
-export default function App() {
-    const [inputText, setInputText] = useState("");
-    const [todos, setTodos] = useState([]);
+function App() {
+  const [items, setItems] = useState([]);
 
+  function addItem(inputText) {
+    setItems((prevItems) => {
+      return [...prevItems, inputText];
+    });
+  }
 
-    function handleChange(event){
-        // console.log(event.target.value, '<---- ')
-        const newTodo = event.target.value;
-        
-        setInputText(newTodo);
-    }
+  function deleteItem(id) {
+    setItems((prevItems) => {
+      return prevItems.filter((item, index) => {
+        return index !== id;
+      });
+    });
+  }
 
-    function addTodo(event){
-        console.log("submit clicked")
-        // event.preventDefault();
-        setTodos((prevState)=>{
-            return [...prevState, inputText]
-        })
-
-        setInputText("");
-    }
+  function editTodo(todoId){
+    console.log(todoId, "<---- todoId to edit")
+  }
 
   return (
     <div className="container">
       <div className="heading">
         <h1>To-Do List</h1>
       </div>
-      <div className="form">
-        <input 
-            type="text" 
-            name="todo"
-            value={inputText} 
-            onChange={handleChange} 
-        />
-        <button onClick={addTodo}>
-          <span>Add</span>
-        </button>
-      </div>
+      <InputArea onAdd={addItem} />
       <div>
         <ul>
-            {
-                todos.map((todo)=>{
-                    return(
-                    <li>{todo}</li>
-                    )
-                })
-            }
-          
+          {items.map((todoItem, index) => (
+            <ToDoItem
+              key={index}
+              id={index}
+              text={todoItem}
+              deleteTodo={deleteItem}
+              editTodo={editTodo}
+            />
+          ))}
         </ul>
       </div>
     </div>
   );
 }
+
+export default App;
